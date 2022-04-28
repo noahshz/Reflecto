@@ -77,6 +77,15 @@
             }
             return $tables;
         }
+        private function tableExists(PDO $db ,string $tablename) : bool
+        {
+            $result = $this->getTables($db);
+
+            if(in_array($tablename, $result)) {
+                return true;
+            }
+            return false;
+        }
 
         public function sync(string $from, string $to, array $tables = null) : bool
         {
@@ -103,6 +112,8 @@
             $from_db = null;
             $to_db = null;
 
+            $tablesToSync = array();
+
             switch($from) {
                 case 'db1':
                     $from_db = $this->db1;
@@ -113,21 +124,42 @@
                     $to_db = $this->db1;
                     break;
             }
+
+            if($tables == null) {
+                $tablesToSync = $this->getTables($from_db);
+            } else {
+                $tablesToSync = $tables;
+            }
             
-            
+            foreach($tablesToSync as $table) {
+                /*
+                    Prüft, ob Tabelle bei der FROM Db vorhanden ist, wenn nein dann fehler
+                */
+                if($this->tableExists($from_db, $table)) {
+                    $sql = $this->createStatement($from_db, $table);
+                    $stmt = $to_db->prepare($sql);
+                    try{
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        echo $e->getMessage();
+                    }
+                    
+                }
+                
 
 
 
 
+            }            
 
+            return false;
+        }
+        private function createStatement(PDO $from_db, string $table) : string
+        {
+            $active_table = $table;
 
-
-
-
-            /*
-                Erstellt Ein create Table Befehl hier für product zum testen
-            */
-            $active_table = "test_export_tabelle";
+            $query = $from_db->prepare("SELECT * FROM `" . $active_table . "`;");
+            $query->execute();
 
             $stmt = $from_db->prepare("DESCRIBE `" . $active_table . "`;");
             try {
@@ -147,17 +179,28 @@
             $statement .= 'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";';
             $statement .= 'SET time_zone = "+00:00";';
 
+            /*
+                Löscht alte Tabelle
+            */
+            $statement .= "DROP TABLE IF EXISTS `" . $active_table . "`;";
+
+
+            /*
+                Erstellt Tabelle
+            */
             $statement .= "CREATE TABLE IF NOT EXISTS `" . $active_table . "` (";
 
+            $columns = array();
             $primary_keys = array();
             $mul_keys = array();
             $auto_increments = array();
+            $table_data = $query->fetchAll();
 
             $temp_stmt = "";
 
             foreach($stmt->fetchAll() as $item) {
-                print_r($item);
-                echo "<br>";               
+                //print_r($item);
+                //echo "<br>";               
                 /*
                     [0] : feldname
                     [1] : typ
@@ -194,7 +237,8 @@
                 }
 
                 //temp statement wird zusammengebaut
-                $temp_stmt .= "'" . $item[0] . "'" . " " . $item[1] . " " . $null . " " . $default . ",";
+                $columns[] = $item[0];
+                $temp_stmt .= "`" . $item[0] . "`" . " " . $item[1] . " " . $null . " " . $default . ",";
             }
             $temp_stmt = substr($temp_stmt, 0, strlen($temp_stmt) - 1);
 
@@ -202,14 +246,32 @@
             $statement .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
 
-            //Füge Daten ein
+            //Füge Daten ein ???WAS WENN LEER?
             //!!!
             $statement .= "/*INSERT VALUES HERE*/";
+            
+            if(!empty($table_data)) {
+                $col = "";
+                $col = implode("` ,`" , $columns);
+                $col = "`" . $col . "`";
+                $statement .= "INSERT INTO `" . $active_table . "` (" . $col . ") VALUES";
 
+                $temp_stmt = "";
 
-
-           
-
+                
+                foreach($table_data as $item) {
+                    $row = "(";
+                    for($i = 0; $i < count($item)/2; $i++) {
+                        $row .= "'" . $item[$i] . "'" . ", ";
+                    }
+                    $row = substr($row, 0, strlen($row) - 2) . "),";
+                    $temp_stmt .= $row;
+                }
+                $temp_stmt = substr($temp_stmt, 0 , strlen($temp_stmt) - 1);
+                $temp_stmt .= ";";
+                $statement .= $temp_stmt;
+            }
+    
             //Füge Primärschlüssel hinzu
             $statement .= "/* Indizies für die Tabelle `" . $active_table . "` */";
             $statement .= "ALTER TABLE `" . $active_table . "` ";
@@ -237,17 +299,7 @@
             }
             $temp_stmt = substr($temp_stmt, 0, strlen($temp_stmt) - 1);
             $statement .= $temp_stmt . ";";
-
-
-            echo "<hr>";
-            print_r($statement);
-            echo "<hr>";
-
-            return false;
-        }
-        private function createStatement(PDO $db, string $table) : string
-        {
-            return "";
+            return $statement;
         }
 
     }
