@@ -87,7 +87,7 @@
             return false;
         }
 
-        public function sync(string $from, string $to, array $tables = null) : bool
+        public function sync(string $from, string $to, array $tables = null) : void
         {
             /*
                 Step 1: 
@@ -106,7 +106,6 @@
             */
             if(!$this->isOpen()) {
                 die("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
-                return false;
             }
 
             $from_db = null;
@@ -146,13 +145,7 @@
                     
                 }
                 
-
-
-
-
             }            
-
-            return false;
         }
         private function createStatement(PDO $from_db, string $table) : string
         {
@@ -167,8 +160,6 @@
             } catch (PDOException $e) {
                 die($e->getMessage());
             }
-
-
 
 
             $statement = "";
