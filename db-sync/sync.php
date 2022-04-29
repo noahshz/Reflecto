@@ -239,7 +239,7 @@
             $temp_stmt = substr($temp_stmt, 0, strlen($temp_stmt) - 1);
 
             $statement .= $temp_stmt;
-            $statement .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            $statement .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 
             //Füge Daten ein ???WAS WENN LEER?
