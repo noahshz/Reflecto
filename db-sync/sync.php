@@ -89,7 +89,6 @@
         public function sync(string $from, string $to, array $tables = null) : bool
         {
             if(!$this->isOpen()) {
-                echo("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
                 return false;
             }
 
