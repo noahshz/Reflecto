@@ -86,7 +86,6 @@
             }
             return false;
         }
-
         public function sync(string $from, string $to, array $tables = null) : void
         {
             if(!$this->isOpen()) {
