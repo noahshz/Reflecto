@@ -131,7 +131,7 @@
                         echo $e->getMessage();
                     }
                     
-                    /* prüfe ob alte daten gleich den neuene daten sind */
+                    /* schreibt alte daten sowie neue daten in arrays */
                     //todo
                     $sql = "SELECT * FROM " . $table . ";";
                     $stmt = $from_db->prepare($sql);
