@@ -7,35 +7,20 @@
         {
             
         }
-        public function setDB1($options) : bool
+        public function setDB(string $db, array $options)
         {
+            //combined function of setDB1, setDB2
             if(array_key_exists("host", $options) && array_key_exists("dbname", $options) && array_key_exists("username", $options) && array_key_exists("password", $options)) 
             {
                 try 
                 {
                     $pdo = new PDO("mysql:host=" . $options['host'] . ";dbname=" . $options['dbname'] . "", $options['username'], $options['password']);
                     /* Variable DB1 wird gesetzt */
-                    $this->db1 = $pdo;
-                    return true;
-                } catch (Exception $e) 
-                {
-                    echo $e->getMessage();
-                    return false;
-                }
-            } else {
-                echo("Es wurden nicht alle erforderlichen Parameter gesetzt.");
-                return false;
-            }
-        }
-        public function setDB2($options) : bool
-        {
-            if(array_key_exists("host", $options) && array_key_exists("dbname", $options) && array_key_exists("username", $options) && array_key_exists("password", $options)) 
-            {
-                try 
-                {
-                    $pdo = new PDO("mysql:host=" . $options['host'] . ";dbname=" . $options['dbname'] . "", $options['username'], $options['password']);
-                    /* Variable DB2 wird gesetzt */
-                    $this->db2 = $pdo;
+                    if($db == "db1") {
+                        $this->db1 = $pdo;
+                    } else {
+                        $this->db2 = $pdo;
+                    }
                     return true;
                 } catch (Exception $e) 
                 {

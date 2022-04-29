@@ -3,13 +3,13 @@
 
     $sync = new Sync();
 
-    $sync->setDB1([
+    $sync->setDB('db1', [
         'host' => 'localhost',
         'dbname' => 'sync_1',
         'username' => 'root',
         'password' => 'xampp#local'
     ]);
-    $sync->setDB2([
+    $sync->setDB('db2', [
         'host' => 'localhost',
         'dbname' => 'sync_2',
         'username' => 'root',
