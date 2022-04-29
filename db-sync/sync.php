@@ -89,21 +89,6 @@
 
         public function sync(string $from, string $to, array $tables = null) : void
         {
-            /*
-                Step 1: 
-                    Lese Daten aus FROM Datenbank.
-                Step 2: 
-                    Speichere Daten 
-                Step 3:
-                    Erstelle Temporäre Tabelle in TO Dtaenbank
-                Step 4:
-                    Schreibe Daten in TEMP Tabelle
-                Step 5: 
-                    Prüfe, ob Daten aus Temp Tabelle mit Daten aus Alter übereinstimmen
-                Step 6: 
-                    Ersetzte die TO Daten mit den TEMP Daten
-
-            */
             if(!$this->isOpen()) {
                 die("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
             }
