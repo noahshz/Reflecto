@@ -146,6 +146,7 @@
                 }
                 
             }   
+            //Datenbanken sind synchron ja / nein
             if($old_db_data === $new_db_data){
                 return true;
             } 
