@@ -86,10 +86,11 @@
             }
             return false;
         }
-        public function sync(string $from, string $to, array $tables = null) : void
+        public function sync(string $from, string $to, array $tables = null) : bool
         {
             if(!$this->isOpen()) {
-                die("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
+                echo("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
+                return false;
             }
 
             $from_db = null;
@@ -114,6 +115,9 @@
                 $tablesToSync = $tables;
             }
             
+            $old_db_data = array();
+            $new_db_data = array();
+
             foreach($tablesToSync as $table) {
                 /*
                     Prüft, ob Tabelle bei der FROM Db vorhanden ist, wenn nein dann fehler
@@ -127,9 +131,26 @@
                         echo $e->getMessage();
                     }
                     
+                    /* prüfe ob alte daten gleich den neuene daten sind */
+                    //todo
+                    $sql = "SELECT * FROM " . $table . ";";
+                    $stmt = $from_db->prepare($sql);
+                    $stmt->execute();
+
+                    $old_db_data[] = $stmt->fetchAll();
+
+                    $stmt = $to_db->prepare($sql);
+                    $stmt->execute();
+
+                    $new_db_data[] = $stmt->fetchAll();
                 }
                 
-            }            
+            }   
+            if($old_db_data === $new_db_data){
+                return true;
+            } 
+            echo "Etwas ist schief gelaufen. Bitte Tabellen überprüfen";
+            return false;
         }
         private function createStatement(PDO $from_db, string $table) : string
         {
