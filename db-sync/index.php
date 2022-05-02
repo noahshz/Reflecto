@@ -17,5 +17,5 @@
     ]);
 
 
-    $sync->sync("db1", "db2");
+    $sync->syncTo("db2");
 ?>

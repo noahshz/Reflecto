@@ -76,7 +76,7 @@
             }
             return false;
         }
-        public function sync(string $from, string $to, array $tables = null) : bool
+        public function syncTo(string $dbname, array $tables = null) : bool
         {
             if(!$this->isOpen()) { return false; }
 
@@ -85,14 +85,14 @@
 
             $tablesToSync = array();
 
-            switch($from) {
+            switch($dbname) {
                 case 'db1':
-                    $from_db = $this->db1;
-                    $to_db = $this->db2;
-                    break;
-                case 'db2':
                     $from_db = $this->db2;
                     $to_db = $this->db1;
+                    break;
+                case 'db2':
+                    $from_db = $this->db1;
+                    $to_db = $this->db2;
                     break;
                 default:
                     echo "Fehler bei Datenbank-Anordnung. Bitte nur die Begriffe: \"db1\" und \"db2\" verwenden.";
@@ -144,7 +144,88 @@
             echo "Etwas ist schief gelaufen. Bitte Tabellen überprüfen";
             return false;
         }
+        /* rework von "createStatement" */
         private function createStatement(PDO $from_db, string $table) : string
+        {
+            /*  
+                1. Lösche alte Tabelle
+                2. erstelle neue
+                3. fremdschlüssel aus
+                4. daten einfügen
+                5. fremdschlüssel an
+            */
+
+            $statement = "";
+            $statement .= 'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";';
+            $statement .= 'SET time_zone = "+00:00";';
+
+            /*
+                Lösche alte Tabelle
+            */
+            $statement .= "DROP TABLE IF EXISTS `" . $table . "`;";
+
+            /*
+                Neue Tabelle Erstellen
+            */
+            $stmt = $from_db->prepare("SHOW CREATE TABLE " . $table . ";");
+            $stmt->execute();
+            /*
+                [0] = tabellenname
+                [1] = create statement für tabelle
+            */
+            $create_stmt = $stmt->fetch()[1];
+
+            $statement .= $create_stmt . ";";
+
+            /*
+                Fremdschlüssel aus
+            */
+            $statement .= "SET FOREIGN_KEY_CHECKS = 0;";
+
+            /*
+                Daten einfügen
+            */
+            //Spalten errechnen
+            $columns = array();
+
+            $stmt = $from_db->prepare("DESCRIBE " . $table . ";");
+            $stmt->execute();
+            foreach($stmt->fetchAll() as $item) {
+                $columns[] = $item[0];
+            }
+            $columns = implode("` ,`", $columns);
+            $columns = "`" . $columns . "`";
+
+            //Tabellen Daten
+            $stmt = $from_db->prepare("SELECT * FROM `" . $table . "`;");
+            $stmt->execute();
+            $table_data = $stmt->fetchAll();
+           
+            if(!empty($table_data)) {
+                $statement .= "INSERT INTO `" . $table . "` (" . $columns . ") VALUES";
+                
+                $temp_stmt = "";
+                foreach($table_data as $item) {
+                    $row = "(";
+                    for($i = 0; $i < count($item)/2; $i++) {
+                        $row .= "'" . $item[$i] . "'" . ", ";
+                    }
+                    $row = substr($row, 0, strlen($row) - 2) . "),";
+                    $temp_stmt .= $row;
+                }
+                $temp_stmt = substr($temp_stmt, 0 , strlen($temp_stmt) - 1);
+                $temp_stmt .= ";";
+                $statement .= $temp_stmt;
+            }
+
+            /*
+                Fremdschlüssel an
+            */
+            $statement .= "SET FOREIGN_KEY_CHECKS = 1;";
+ 
+            return $statement;
+        }
+        private function createStatement_old(PDO $from_db, string $table) : string
         {
             $active_table = $table;
 
@@ -289,6 +370,5 @@
             $statement .= $temp_stmt . ";";
             return $statement;
         }
-
     }
 ?>
