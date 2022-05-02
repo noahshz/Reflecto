@@ -2,10 +2,13 @@
     class Sync {
         private PDO $db1;
         private PDO $db2;
+        
+        private string $errmsg;
 
         public function __construct()
         {
-            
+            $this->errcode = 0;
+            $this->errmsg = "";
         }
         public function setDB(string $db, array $options)
         {
@@ -16,15 +19,24 @@
                 {
                     $pdo = new PDO("mysql:host=" . $options['host'] . ";dbname=" . $options['dbname'] . "", $options['username'], $options['password']);
                     /* Variablen DBn werden gesetzt */
-                    if($db == "db1") {
-                        $this->db1 = $pdo;
+                    if($db == "db1" || $db == "db2") {
+                        if($db == "db1") {
+                            $this->db1 = $pdo;
+                        } else {
+                            $this->db2 = $pdo;
+                        }
                     } else {
-                        $this->db2 = $pdo;
+                        $this->setError(
+                            "Fehlerhafter Parameter für \"db\". Bitte verwenden Sie nur \"db1\" und \"db2\"."
+                            . "<br>"
+                        );
+                        return false;
                     }
+                    
                     return true;
                 } catch (Exception $e) 
                 {
-                    $this->printError(
+                    $this->setError(
                         "[" . $db . "] : " . $e->getMessage()
                         . "<br>"
                     );
@@ -46,7 +58,7 @@
                 }
                 $missing_parameters = substr($missing_parameters, 0, strlen($missing_parameters) - 2);
                 
-                $this->printError(
+                $this->setError(
                     "[" . $db . "] -> " . "Es wurden nicht alle erforderlichen Parameter gesetzt. "
                     . "Fehlende Parameter: " . $missing_parameters . ". "
                     . "<br>"
@@ -61,11 +73,11 @@
             }
             
             if(!isset($this->db1) && isset($this->db2)) {
-                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db1\"!");
+                $this->setError("Fehlende oder Fehlerhafte Verbindung zu \"db1\"!");
             } else if(!isset($this->db2) && isset($this->db1)) {
-                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db2\"!");
+                $this->setError("Fehlende oder Fehlerhafte Verbindung zu \"db2\"!");
             } else if(!isset($this->db1) && !isset($this->db2)) {
-                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db1\" und \"db2\"!");
+                $this->setError("Fehlende oder Fehlerhafte Verbindung zu \"db1\" und \"db2\"!");
             }
             return false;
         }
@@ -81,7 +93,7 @@
             try {
                 $stmt->execute();
             } catch (Exception $e) {
-                $this->printError(
+                $this->setError(
                     $e->getMessage()
                     . "<br>"
                 );
@@ -122,7 +134,7 @@
                     $to_db = $this->db2;
                     break;
                 default:
-                    $this->printError(
+                    $this->setError(
                         "Fehlender / Fehlerhafter Parameter. Bitte nur \"db1\" oder \"db2\" verwenden."
                     );
                     return false;
@@ -148,7 +160,7 @@
                     try{
                         $stmt->execute();
                     } catch (PDOException $e) {
-                        $this->printError(
+                        $this->setError(
                             $e->getMessage()
                             . "<br>"
                         );
@@ -402,10 +414,19 @@
             $statement .= $temp_stmt . ";";
             return $statement;
         }
-        private function printError($msg) : void
+        private function setError($msg) : void
         {
-            echo "[FEHLER] : " . $msg;
-            echo "<br>";
+            if($this->errmsg == ""){
+                $this->errmsg = "[FEHLER] : " . $msg . "<br>";
+            }
+        }
+
+        public function getErrorMessage() : string
+        {
+            if($this->errmsg == "") {
+                return null;
+            }
+            return $this->errmsg;
         }
     }
 ?>

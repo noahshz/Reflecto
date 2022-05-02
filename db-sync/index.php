@@ -16,5 +16,7 @@
         'password' => 'xampp#local'
     ]);
 
-    $sync->syncTo("db2");
+    if(!$sync->syncTo("db2")) {
+        echo $sync->getErrorMessage();
+    } 
 ?>
