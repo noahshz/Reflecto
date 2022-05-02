@@ -15,7 +15,7 @@
                 try 
                 {
                     $pdo = new PDO("mysql:host=" . $options['host'] . ";dbname=" . $options['dbname'] . "", $options['username'], $options['password']);
-                    /* Variable DB1 wird gesetzt */
+                    /* Variablen DBn werden gesetzt */
                     if($db == "db1") {
                         $this->db1 = $pdo;
                     } else {
@@ -37,6 +37,14 @@
             if(isset($this->db1) && isset($this->db2)) {
                 return true;
             }
+            
+            if(!isset($this->db1) && isset($this->db2)) {
+                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB1\"!";
+            } else if(!isset($this->db2) && isset($this->db1)) {
+                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB2\"!";
+            } else if(!isset($this->db1) && !isset($this->db2)) {
+                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB1\" und \"DB2\"!";
+            }
             return false;
         }
         private function getTables(PDO $db) : array
@@ -45,10 +53,7 @@
             /*
                 Checkt, ob beide Datenbankverbindungen gesetzt wurden
             */
-            if(!$this->isOpen()) {
-                die("Fehlende Datenbankverbindung. Bitte DB1 und/oder DB2 überprüfen.");
-                return [];
-            }
+            if(!$this->isOpen()) { return []; }
 
             $stmt = $db->prepare("SHOW TABLES;");
             try {
@@ -73,9 +78,7 @@
         }
         public function sync(string $from, string $to, array $tables = null) : bool
         {
-            if(!$this->isOpen()) {
-                return false;
-            }
+            if(!$this->isOpen()) { return false; }
 
             $from_db = null;
             $to_db = null;
@@ -90,6 +93,10 @@
                 case 'db2':
                     $from_db = $this->db2;
                     $to_db = $this->db1;
+                    break;
+                default:
+                    echo "Fehler bei Datenbank-Anordnung. Bitte nur die Begriffe: \"db1\" und \"db2\" verwenden.";
+                    return false;
                     break;
             }
 
