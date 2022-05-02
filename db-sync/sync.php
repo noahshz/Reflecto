@@ -7,7 +7,6 @@
 
         public function __construct()
         {
-            $this->errcode = 0;
             $this->errmsg = "";
         }
         public function setDB(string $db, array $options)
