@@ -16,6 +16,5 @@
         'password' => 'xampp#local'
     ]);
 
-
     $sync->syncTo("db2");
 ?>
