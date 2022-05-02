@@ -24,11 +24,33 @@
                     return true;
                 } catch (Exception $e) 
                 {
-                    echo $e->getMessage();
+                    $this->printError(
+                        "[" . $db . "] : " . $e->getMessage()
+                        . "<br>"
+                    );
                     return false;
                 }
             } else {
-                echo("Es wurden nicht alle erforderlichen Parameter gesetzt.");
+                $missing_parameters = "";
+                if(!array_key_exists("host", $options)) {
+                    $missing_parameters .= "'host', ";
+                }
+                if(!array_key_exists("dbname", $options)) {
+                    $missing_parameters .= "'dbname', ";
+                }
+                if(!array_key_exists("username", $options)) {
+                    $missing_parameters .= "'username', ";
+                }
+                if(!array_key_exists("password", $options)) {
+                    $missing_parameters .= "'password', ";
+                }
+                $missing_parameters = substr($missing_parameters, 0, strlen($missing_parameters) - 2);
+                
+                $this->printError(
+                    "[" . $db . "] -> " . "Es wurden nicht alle erforderlichen Parameter gesetzt. "
+                    . "Fehlende Parameter: " . $missing_parameters . ". "
+                    . "<br>"
+                );
                 return false;
             }
         }
@@ -39,11 +61,11 @@
             }
             
             if(!isset($this->db1) && isset($this->db2)) {
-                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB1\"!";
+                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db1\"!");
             } else if(!isset($this->db2) && isset($this->db1)) {
-                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB2\"!";
+                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db2\"!");
             } else if(!isset($this->db1) && !isset($this->db2)) {
-                echo "Fehlende oder Fehlerhafte Verbindung zu \"DB1\" und \"DB2\"!";
+                $this->printError("Fehlende oder Fehlerhafte Verbindung zu \"db1\" und \"db2\"!");
             }
             return false;
         }
@@ -59,7 +81,10 @@
             try {
                 $stmt->execute();
             } catch (Exception $e) {
-                die($e->getMessage());
+                $this->printError(
+                    $e->getMessage()
+                    . "<br>"
+                );
             }
 
             foreach($stmt->fetchAll() as $item) {
@@ -69,6 +94,8 @@
         }
         private function tableExists(PDO $db ,string $tablename) : bool
         {
+            if(!$this->isOpen()) { return false; }
+
             $result = $this->getTables($db);
 
             if(in_array($tablename, $result)) {
@@ -95,7 +122,9 @@
                     $to_db = $this->db2;
                     break;
                 default:
-                    echo "Fehler bei Datenbank-Anordnung. Bitte nur die Begriffe: \"db1\" und \"db2\" verwenden.";
+                    $this->printError(
+                        "Fehlender / Fehlerhafter Parameter. Bitte nur \"db1\" oder \"db2\" verwenden."
+                    );
                     return false;
                     break;
             }
@@ -119,7 +148,10 @@
                     try{
                         $stmt->execute();
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
+                        $this->printError(
+                            $e->getMessage()
+                            . "<br>"
+                        );
                     }
                     
                     /* schreibt alte daten sowie neue daten in arrays */
@@ -140,8 +172,8 @@
             //Datenbanken sind synchron ja / nein
             if($old_db_data === $new_db_data){
                 return true;
-            } 
-            echo "Etwas ist schief gelaufen. Bitte Tabellen überprüfen";
+            }
+
             return false;
         }
         /* rework von "createStatement" */
@@ -369,6 +401,11 @@
             $temp_stmt = substr($temp_stmt, 0, strlen($temp_stmt) - 1);
             $statement .= $temp_stmt . ";";
             return $statement;
+        }
+        private function printError($msg) : void
+        {
+            echo "[FEHLER] : " . $msg;
+            echo "<br>";
         }
     }
 ?>
