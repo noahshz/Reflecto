@@ -11,7 +11,7 @@
     ]);
     $sync->setDB('db2', [
         'host' => 'localhost',
-        'dbname' => 'sync_2',
+        'dbname' => 'sync_1',
         'username' => 'root',
         'password' => 'xampp#local'
     ]);

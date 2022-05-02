@@ -163,6 +163,7 @@
                             $e->getMessage()
                             . "<br>"
                         );
+                        return false;
                     }
                     
                     /* schreibt alte daten sowie neue daten in arrays */
