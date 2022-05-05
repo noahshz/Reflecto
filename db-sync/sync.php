@@ -268,8 +268,8 @@
                     $row = "(";
                     for($i = 0; $i < count($item)/2; $i++) {
                         // $row .= "'" . quote($item[$i]) . "'" . ", ";
-                        if ( is_null($item[$i]) ) {
-                            $row .= "NULL,";
+                        if(is_null($item[$i]) ) {
+                            $row .= "NULL, ";
                         } else {
                             $row .= $from_db->quote($item[$i]) . ", ";
                         }
@@ -445,9 +445,10 @@
         public function getErrorMessage() : string
         {
             if($this->errmsg == "") {
-                return "Unexpected Error";
+                return "No Error found.";
             }
             return $this->errmsg;
         }
+
     }
 ?>
