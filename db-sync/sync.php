@@ -185,10 +185,10 @@
                     $new_db_data[] = $stmt->fetchAll();
 
                     if($old_db_data === $new_db_data){
-                        echo 'Sync ok';
+                        //echo 'Sync ok';
                     } else { 
                         $this->setError('Sync Data not valid.<br>');
-                        echo '<hr> Sync NOT ok<br>';
+                        //echo '<hr> Sync NOT ok<br>';
                     }
 
                 }
@@ -274,7 +274,7 @@
                             $row .= $from_db->quote($item[$i]) . ", ";
                         }
                     }
-                    
+
                     $row = substr($row, 0, strlen($row) - 2) . "),";
                     $temp_stmt .= $row;
                 }
