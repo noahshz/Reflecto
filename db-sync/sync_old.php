@@ -153,24 +153,19 @@
                 /*
                     Prüft, ob Tabelle bei der FROM Db vorhanden ist, wenn nein dann fehler
                 */
-                //echo 'Syncing ' . $table . '<br>';
-
-		        if($this->tableExists($from_db, $table)) {
+                if($this->tableExists($from_db, $table)) {
                     $sql = $this->createStatement($from_db, $table);
-                    //echo $sql . '<hr>';
-			        $stmt = $to_db->prepare($sql);
+                    $stmt = $to_db->prepare($sql);
                     try{
                         $stmt->execute();
                     } catch (PDOException $e) {
-		                //echo "ERROR";
                         $this->setError(
-                            'Prepare Stmt  ' . $e->getMessage() . ' ' . $table
+                            $e->getMessage()
                             . "<br>"
                         );
                         return false;
                     }
- 		            //echo "OK<br>";
-		
+                    
                     /* schreibt alte daten sowie neue daten in arrays */
                     //todo
                     $sql = "SELECT * FROM `" . $table . "`;";
@@ -183,25 +178,15 @@
                     $stmt->execute();
 
                     $new_db_data[] = $stmt->fetchAll();
-
-                    if($old_db_data === $new_db_data){
-                        echo 'Sync ok';
-                    } else { 
-                        $this->setError('Sync Data not valid.<br>');
-                        echo '<hr> Sync NOT ok<br>';
-                    }
-
                 }
-            }
+                
+            }   
             //Datenbanken sind synchron ja / nein
-		    //echo "<strong>Validating all Data" . '</strong><br>';
             if($old_db_data === $new_db_data){
                 return true;
-            } else { 
-            	$this->setError('Sync Data not valid.<br>');
             }
 
-		    return false;
+            return false;
         }
         /* rework von "createStatement" */
         private function createStatement(PDO $from_db, string $table) : string
@@ -267,14 +252,8 @@
                 foreach($table_data as $item) {
                     $row = "(";
                     for($i = 0; $i < count($item)/2; $i++) {
-                        // $row .= "'" . quote($item[$i]) . "'" . ", ";
-                        if ( is_null($item[$i]) ) {
-                            $row .= "NULL,";
-                        } else {
-                            $row .= $from_db->quote($item[$i]) . ", ";
-                        }
+                        $row .= "'" . $item[$i] . "'" . ", ";
                     }
-                    
                     $row = substr($row, 0, strlen($row) - 2) . "),";
                     $temp_stmt .= $row;
                 }
@@ -445,7 +424,7 @@
         public function getErrorMessage() : string
         {
             if($this->errmsg == "") {
-                return "Unexpected Error";
+                return null;
             }
             return $this->errmsg;
         }
