@@ -233,7 +233,7 @@
                 $stmt->execute();
 
                 if(!empty($stmt->fetchAll())) {
-                    $statement = $this->backup_createStatement($from_db, $table, $backup_timestamp);
+                    $statement = $this->createStatement($from_db, $table, $backup_timestamp);
                     $stmt = $to_db->prepare($statement);
 
                     try {
@@ -255,6 +255,11 @@
                 return false;
             }
             
+        }
+        public function restoreFrom(string $str_from_db, string $timestamp) : bool
+        {
+            //todo
+            return true;
         }
         private function setActive(PDO $db, bool $value) : void
         {
@@ -283,10 +288,8 @@
             }
             return false;
         }
-        private function backup_createStatement(PDO $from_db, string $table, $timestamp) : string
-        {
-            //PRÜFE OB TABELLE LEER
-            
+        private function createStatement(PDO $from_db, string $table, $timestamp) : string
+        {          
             $statement = "";
             $statement .= 'INSERT INTO `' . $this->backup_value_tablename . '` (`timestamp`, `tablename`, `field`, `value`) VALUES ';
 
