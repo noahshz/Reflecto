@@ -233,7 +233,7 @@
                 $stmt->execute();
 
                 if(!empty($stmt->fetchAll())) {
-                    $statement = $this->createStatement($from_db, $table, $backup_timestamp);
+                    $statement = $this->createInsertStatement($from_db, $table, $backup_timestamp);
                     $stmt = $to_db->prepare($statement);
 
                     try {
@@ -258,6 +258,61 @@
         }
         public function restoreFrom(string $str_from_db, string $timestamp) : bool
         {
+            /*
+                1. Prüfe, ob Backup Tabellen in DB vorhanden [ ]
+                2. Prüfe, ob Zeitstempel in Backups vorhanden und holt sich Struktur der wiederherzustellenden Tabelle [x]
+                3. Baue Statement zusammen mit Daten aus Tabellen [ ]
+
+            */
+            if(!$this->isOpen()) { return false; }
+
+            $to_db = null;
+            $from_db = null;
+
+            if(!$this->isOpen()) { return false; }
+
+            //'db1' oder 'db2'
+            switch($str_from_db)
+            {
+                case 'db1':
+                    $to_db = $this->db2;
+                    $from_db = $this->db1;
+                    break;
+                case 'db2':
+                    $to_db = $this->db1;
+                    $from_db = $this->db2;
+                    break;
+                default:
+                    $this->setError('Ungültiger Parameter! Bitte nur \'db1\' oder \'db2\' verwenden.');
+                    return false;
+            }
+
+
+            //1
+            $tables = $this->getTables($from_db);
+
+            if(!in_array($this->backup_config_tablename, $tables) && !in_array($this->backup_structure_tablename, $tables) && !in_array($this->backup_value_tablename, $tables)) {
+                $this->setError("Auf dieser Datenbank befinden sich keine durch die Klasse erstellten Backups.");
+                return false;
+            }
+
+            //2
+            $sql = "SELECT * FROM `" . $this->backup_structure_tablename . "` WHERE `timestamp` = :timestamp;";
+            $stmt = $from_db->prepare($sql);
+            $stmt->bindParam(":timestamp", $timestamp, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetchAll();
+
+            if(empty($result)) {
+                $this->setError("Es wurde kein Backup mit dem Zeitstempel " . $timestamp . " gefunden.");
+                return false;
+            }
+
+
+
+
+
             //todo
             return true;
         }
@@ -288,7 +343,7 @@
             }
             return false;
         }
-        private function createStatement(PDO $from_db, string $table, $timestamp) : string
+        private function createInsertStatement(PDO $from_db, string $table, $timestamp) : string
         {          
             $statement = "";
             $statement .= 'INSERT INTO `' . $this->backup_value_tablename . '` (`timestamp`, `tablename`, `field`, `value`) VALUES ';

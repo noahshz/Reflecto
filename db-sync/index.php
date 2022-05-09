@@ -2,6 +2,7 @@
     require_once 'sync.php';
     require_once 'Backup.php';
 
+    /*
     $sync = new Sync();
 
     $sync->setDB('db1', [
@@ -17,7 +18,6 @@
         'password' => 'xampp#local'
     ]);
 
-    /*
     if(!$sync->syncTo("db2")) {
         echo $sync->getErrorMessage();
     } 
@@ -39,6 +39,11 @@
     ]);
 
     //$backup->writeTo('db1');
+
+    if(!$backup->restoreFrom('db1', "2022-05-09 10:04:41")) {
+        echo $backup->getErrorMessage();
+    }
+
 
     
 ?>
