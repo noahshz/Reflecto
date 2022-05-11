@@ -455,5 +455,42 @@
             }
             return $this->errmsg;
         }
+        public function getRestoreableTimestamps(string $db) : array
+        {
+            switch($db) {
+                case 'db1':
+                    $pdo = $this->db1;
+                    break;
+                case 'db2':
+                    $pdo = $this->db2;
+                    break;
+                default:
+                    $this->setError('Ungültiger Parameter! Bitte nur \'db1\' oder \'db2\' verwenden.');
+                    return [];
+            }
+
+            if(!in_array($this->backup_structure_tablename, $this->getTables($pdo))) {
+                $this->setError('Es wurden keine Backup Tabellen auf dieser Datenbank gefunden.');
+                return [];
+            }
+
+            $sql = "SELECT DISTINCT `timestamp` FROM `" . $this->backup_structure_tablename . "`;";
+            $stmt = $pdo->prepare($sql);
+
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e);
+                return [];
+            }
+
+            $result = $stmt->fetchAll();
+            $timestamps = array();
+            foreach($result as $item) {
+                $timestamps[] = $item['timestamp'];
+            }
+
+            return $timestamps;
+        }
     }
 ?>
