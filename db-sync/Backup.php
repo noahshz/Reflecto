@@ -297,7 +297,7 @@
             }
 
             //2
-            $sql = "SELECT * FROM `" . $this->backup_structure_tablename . "` WHERE `timestamp` = :timestamp;";
+            $sql = "SELECT `tablename`, `createstmt` FROM `" . $this->backup_structure_tablename . "` WHERE `timestamp` = :timestamp;";
             $stmt = $from_db->prepare($sql);
             $stmt->bindParam(":timestamp", $timestamp, PDO::PARAM_STR);
             $stmt->execute();
@@ -309,9 +309,76 @@
                 return false;
             }
 
+            foreach($result as $item) {
+                $tablename = $item['tablename'];
+                $createstmt = $item['createstmt'];
 
+                $sql = "DESCRIBE `" . $tablename . "`";
+                $stmt = $from_db->prepare($sql);
+                $stmt->execute();
 
+                $result = $stmt->fetchAll();
 
+                $fields = array();
+                foreach($result as $item) {
+                    $fields[] = $item['Field'];
+                }
+
+                $statement = "";
+
+                $statement .= "DROP TABLE IF EXISTS `" . $tablename . "`;";
+                $statement .= "SET FOREIGN_KEY_CHECKS = 0;";
+                $statement .= $createstmt;
+
+                $sql = "SELECT `field`, `value` FROM `" . $this->backup_value_tablename . "` WHERE `timestamp` = :zeitstempel AND `tablename` = :tablename;";
+                $stmt = $from_db->prepare($sql);
+                $stmt->bindParam(":zeitstempel", $timestamp, PDO::PARAM_STR);
+                $stmt->bindParam(":tablename", $tablename, PDO::PARAM_STR);
+                $stmt->execute();
+
+                $result = $stmt->fetchAll();
+
+                $z = 0;
+
+                $insert_values = "(";
+
+                foreach($result as $item) {
+                    if($z == count($fields)) {
+                        $insert_values = substr($insert_values, 0, strlen($insert_values) - 2);
+                        $insert_values .= "), (";
+                        $z = 0;
+                    }
+                    if(is_null($item['value'])) {
+                        $insert_values .= "NULL" . ", ";
+                    } else {
+                        $insert_values .= $from_db->quote($item['value']) . ", ";
+                    }
+
+                    $z++;
+                }
+                
+                $insert_values = substr($insert_values, 0, strlen($insert_values) - 2) . ");";
+
+                $columns = implode("`, `", $fields);
+
+                $statement .= "INSERT INTO `" . $tablename . "` (`" . $columns . "`) VALUES " . $insert_values;
+
+                $statement .= "SET FOREIGN_KEY_CHECKS = 1;";
+
+                /*
+                echo "<hr>";
+                print_r($statement);
+                echo "<hr>";
+                */
+
+                $stmt = $to_db->prepare($statement);
+
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError("TABELLE: "  . $tablename . " --> " . $e);
+                }
+            }
 
             //todo
             return true;
