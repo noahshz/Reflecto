@@ -1,5 +1,5 @@
 <?php
-    require_once 'sync.php';
+    require_once 'Sync.php';
     require_once 'Backup.php';
 
     /*
