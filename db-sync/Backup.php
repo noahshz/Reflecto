@@ -9,6 +9,17 @@
         private string $backup_structure_tablename = "sn_backup_structure";
         private string $backup_config_tablename = "sn_backup_config";
 
+        private array $typesToQuote = [
+            'text',
+            'tinytext',
+            'mediumtext',
+            'longtext',
+            'varchar',
+            'char',
+            'binary',
+            'json'
+        ];
+
         public function __construct()
         {
             $this->errmsg = "";
@@ -120,6 +131,7 @@
                 `tablename` varchar(255) DEFAULT NULL,
                 `field` varchar(255) DEFAULT NULL,
                 `value` varchar(1000) DEFAULT NULL,
+                `type` varchar(255) DEFAULT NULL,
                 PRIMARY KEY (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
               CREATE TABLE IF NOT EXISTS `' . $this->backup_structure_tablename . '` (
@@ -359,7 +371,7 @@
                 //$statement .= "SET FOREIGN_KEY_CHECKS = 0;";
                 $statement .= $createstmt;
 
-                $sql = "SELECT `field`, `value` FROM `" . $this->backup_value_tablename . "` WHERE `timestamp` = :zeitstempel AND `tablename` = :tablename;";
+                $sql = "SELECT `field`, `value`, `type` FROM `" . $this->backup_value_tablename . "` WHERE `timestamp` = :zeitstempel AND `tablename` = :tablename;";
                 $stmt = $from_db->prepare($sql);
                 $stmt->bindParam(":zeitstempel", $timestamp, PDO::PARAM_STR);
                 $stmt->bindParam(":tablename", $tablename, PDO::PARAM_STR);
@@ -384,13 +396,15 @@
                         $insert_values .= "), (";
                         $z = 0;
                     }
+
                     if(is_null($item['value'])) {
                         $insert_values .= "NULL" . ", ";
-                    } else if(is_numeric($item['value'])) {
-                        $insert_values .= $item['value'] . ", ";
                     } else {
-                        //$insert_values .= $from_db->quote($item['value']) . ", ";
-                        $insert_values .= $to_db->quote($item['value']) . ', ';
+                        if(in_array($item['type'], $this->typesToQuote)) {
+                            $insert_values .= $to_db->quote($item['value']) . ', ';
+                        } else {
+                            $insert_values .= $item['value'] . ", ";
+                        }
                     }
 
                     $z++;
@@ -467,7 +481,41 @@
         private function createInsertStatement(PDO $from_db, string $table, $timestamp) : string
         {          
             $statement = "";
-            $statement .= 'INSERT INTO `' . $this->backup_value_tablename . '` (`timestamp`, `tablename`, `field`, `value`) VALUES ';
+            $statement .= 'INSERT INTO `' . $this->backup_value_tablename . '` (`timestamp`, `tablename`, `field`, `value`, `type`) VALUES ';
+
+
+            $sql = "DESCRIBE `" . $table . "`;";
+            $stmt = $from_db->prepare($sql);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+            }
+
+            $result = $stmt->fetchAll();
+
+            $fieldname = array();
+            $fieldtype = array();
+            $field_types = array();
+
+            foreach($result as $item) {
+                $fieldname[] = $item['Field'];
+
+                if(str_contains($item['Type'], "(")) {
+                    $fieldtype[] = substr($item['Type'], 0, strpos($item['Type'], "("));
+                } else {
+                    $fieldtype[] = $item['Type'];
+                } 
+               
+            }
+            $field_types = array_combine($fieldname, $fieldtype);
+
+            /*
+            echo "<hr>";
+            print_r($field_types);
+            echo "<hr>";
+            */
+
 
             $sql = "SELECT * FROM `" . $table . "`;";
             $stmt = $from_db->prepare($sql);
@@ -479,16 +527,18 @@
 
             foreach($result as $item) {
                 foreach($item as $key => $value){
+                    /*
+                        datentyp berücksichtigen
+                    */
                     if(!is_int($key)) {
+                        //value
                         if(is_null($value)) {
                             $value = "NULL";
-                        } else if(is_numeric($value)) {
-                            $value = $value;
                         } else {
                             $value = '' . $from_db->quote($value) . '';
                             //$value = $value;
                         }
-                        $temp_stmt .= '("' . $timestamp . '", "' . $table . '", "' . $key . '", ' . $value . '),';
+                        $temp_stmt .= '("' . $timestamp . '", "' . $table . '", "' . $key . '", ' . $value . ', "' . $field_types[$key] . '"),';
                     }
                 }        
             }

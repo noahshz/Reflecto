@@ -67,7 +67,7 @@
 
     //$backup->writeTo('db1');
 
-    //$backup->restoreFrom('db1', "2022-05-12 11:26:00");
+    //$backup->restoreFrom('db1', "2022-05-12 15:44:24");
 
     echo $backup->getErrorMessage();
 
