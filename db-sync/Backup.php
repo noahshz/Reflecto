@@ -119,7 +119,7 @@
                 `timestamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                 `tablename` varchar(255) DEFAULT NULL,
                 `field` varchar(255) DEFAULT NULL,
-                `value` text DEFAULT NULL,
+                `value` varchar(1000) DEFAULT NULL,
                 PRIMARY KEY (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
               CREATE TABLE IF NOT EXISTS `' . $this->backup_structure_tablename . '` (
@@ -177,15 +177,16 @@
                     $this->setError('Ungültiger Parameter! Bitte nur \'db1\' oder \'db2\' verwenden.');
                     return false;
             }     
-            
+        
+
+            //Erstell backup Tabellen in To-DB wenn nicht vorhanden
+            $this->initBackupTables($to_db);
+
             //Prüfe, ob bereits aktiv
             if($this->isActive($to_db)) {
                 $this->setError('Backup wird bereits ausgeführt.');
                 return false;
             }
-
-            //Erstell backup Tabellen in To-DB wenn nicht vorhanden
-            $this->initBackupTables($to_db);
 
             //setzt backup aktiv auf true
             $this->setActive($to_db, true);
@@ -350,8 +351,11 @@
                     }
                     if(is_null($item['value'])) {
                         $insert_values .= "NULL" . ", ";
+                    } else if(is_numeric($item['value'])) {
+                        $insert_values .= $item['value'] . ", ";
                     } else {
-                        $insert_values .= $from_db->quote($item['value']) . ", ";
+                        //$insert_values .= $from_db->quote($item['value']) . ", ";
+                        $insert_values .= $to_db->quote($item['value']) . ', ';
                     }
 
                     $z++;
@@ -365,11 +369,11 @@
 
                 $statement .= "SET FOREIGN_KEY_CHECKS = 1;";
 
-                /*
+                
                 echo "<hr>";
                 print_r($statement);
                 echo "<hr>";
-                */
+                
 
                 $stmt = $to_db->prepare($statement);
 
@@ -428,8 +432,11 @@
                     if(!is_int($key)) {
                         if(is_null($value)) {
                             $value = "NULL";
+                        } else if(is_numeric($value)) {
+                            $value = $value;
                         } else {
-                            $value = '"' . $from_db->quote($value) . '"';
+                            //$value = '' . $from_db->quote($value) . '';
+                            $value = $value;
                         }
                         $temp_stmt .= '("' . $timestamp . '", "' . $table . '", "' . $key . '", ' . $value . '),';
                     }
@@ -445,7 +452,7 @@
         private function setError($msg) : void
         {
             if($this->errmsg == ""){
-                $this->errmsg = "[FEHLER] : " . $msg . "<br>";
+                $this->errmsg = "[FEHLER] : " . $msg;
             }
         }
         public function getErrorMessage() : string

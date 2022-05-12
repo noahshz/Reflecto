@@ -1,0 +1,999 @@
+-- MariaDB dump 10.19  Distrib 10.5.15-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: repli_slave
+-- ------------------------------------------------------
+-- Server version	10.5.15-MariaDB-0+deb11u1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `TABLE 33`
+--
+
+DROP TABLE IF EXISTS `TABLE 33`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `TABLE 33` (
+  `ď»żT;B;W1;E1;W2;E2;W3;E3;S;GW1;GE1;GW2;GE2;GW3;GE3;GS` varchar(128) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TABLE 33`
+--
+
+LOCK TABLES `TABLE 33` WRITE;
+/*!40000 ALTER TABLE `TABLE 33` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TABLE 33` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TABLE 34`
+--
+
+DROP TABLE IF EXISTS `TABLE 34`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `TABLE 34` (
+  `T` int(6) DEFAULT NULL,
+  `B` varchar(40) DEFAULT NULL,
+  `W1` int(6) DEFAULT NULL,
+  `E1` varchar(4) DEFAULT NULL,
+  `W2` varchar(6) DEFAULT NULL,
+  `E2` varchar(4) DEFAULT NULL,
+  `W3` varchar(6) DEFAULT NULL,
+  `E3` varchar(4) DEFAULT NULL,
+  `S` varchar(9) DEFAULT NULL,
+  `GW1` int(6) DEFAULT NULL,
+  `GE1` varchar(4) DEFAULT NULL,
+  `GW2` varchar(6) DEFAULT NULL,
+  `GE2` varchar(4) DEFAULT NULL,
+  `GW3` varchar(6) DEFAULT NULL,
+  `GE3` varchar(4) DEFAULT NULL,
+  `GS` varchar(9) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TABLE 34`
+--
+
+LOCK TABLES `TABLE 34` WRITE;
+/*!40000 ALTER TABLE `TABLE 34` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TABLE 34` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TABLE 35`
+--
+
+DROP TABLE IF EXISTS `TABLE 35`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `TABLE 35` (
+  `T` varchar(8) DEFAULT NULL,
+  `B` varchar(30) DEFAULT NULL,
+  `W1` varchar(8) DEFAULT NULL,
+  `E1` varchar(4) DEFAULT NULL,
+  `W2` varchar(8) DEFAULT NULL,
+  `E2` varchar(4) DEFAULT NULL,
+  `W3` varchar(8) DEFAULT NULL,
+  `E3` varchar(4) DEFAULT NULL,
+  `S` varchar(6) DEFAULT NULL,
+  `GW1` varchar(8) DEFAULT NULL,
+  `GE1` varchar(4) DEFAULT NULL,
+  `GW2` varchar(8) DEFAULT NULL,
+  `GE2` varchar(4) DEFAULT NULL,
+  `GW3` varchar(8) DEFAULT NULL,
+  `GE3` varchar(4) DEFAULT NULL,
+  `GS` varchar(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TABLE 35`
+--
+
+LOCK TABLES `TABLE 35` WRITE;
+/*!40000 ALTER TABLE `TABLE 35` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TABLE 35` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `adv_img`
+--
+
+DROP TABLE IF EXISTS `adv_img`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `adv_img` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `img` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `attribute` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `adv_img`
+--
+
+LOCK TABLES `adv_img` WRITE;
+/*!40000 ALTER TABLE `adv_img` DISABLE KEYS */;
+/*!40000 ALTER TABLE `adv_img` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `config`
+--
+
+DROP TABLE IF EXISTS `config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config` (
+  `parameter` varchar(25) NOT NULL,
+  `value` varchar(25) NOT NULL,
+  `start` datetime NOT NULL,
+  PRIMARY KEY (`parameter`,`start`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `config`
+--
+
+LOCK TABLES `config` WRITE;
+/*!40000 ALTER TABLE `config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cool`
+--
+
+DROP TABLE IF EXISTS `cool`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cool` (
+  `test` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cool`
+--
+
+LOCK TABLES `cool` WRITE;
+/*!40000 ALTER TABLE `cool` DISABLE KEYS */;
+INSERT INTO `cool` VALUES (NULL,'\'noah\'');
+/*!40000 ALTER TABLE `cool` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_backups`
+--
+
+DROP TABLE IF EXISTS `cp_backups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_backups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `timestamp` datetime NOT NULL,
+  `user` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_backups`
+--
+
+LOCK TABLES `cp_backups` WRITE;
+/*!40000 ALTER TABLE `cp_backups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_backups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_changes`
+--
+
+DROP TABLE IF EXISTS `cp_changes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_changes` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user` varchar(255) NOT NULL,
+  `changed_value` varchar(255) NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=363 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_changes`
+--
+
+LOCK TABLES `cp_changes` WRITE;
+/*!40000 ALTER TABLE `cp_changes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_changes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_mapping`
+--
+
+DROP TABLE IF EXISTS `cp_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_mapping` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `tabelle_spalte` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_mapping`
+--
+
+LOCK TABLES `cp_mapping` WRITE;
+/*!40000 ALTER TABLE `cp_mapping` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_mapping` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_sessions`
+--
+
+DROP TABLE IF EXISTS `cp_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_sessions` (
+  `id` char(40) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `created` datetime DEFAULT current_timestamp(),
+  `modified` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `data` blob DEFAULT NULL,
+  `expires` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_sessions`
+--
+
+LOCK TABLES `cp_sessions` WRITE;
+/*!40000 ALTER TABLE `cp_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_sync`
+--
+
+DROP TABLE IF EXISTS `cp_sync`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_sync` (
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_sync`
+--
+
+LOCK TABLES `cp_sync` WRITE;
+/*!40000 ALTER TABLE `cp_sync` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_sync` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_sync_tables`
+--
+
+DROP TABLE IF EXISTS `cp_sync_tables`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_sync_tables` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tablename` varchar(255) NOT NULL,
+  `sync` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_sync_tables`
+--
+
+LOCK TABLES `cp_sync_tables` WRITE;
+/*!40000 ALTER TABLE `cp_sync_tables` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_sync_tables` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cp_users`
+--
+
+DROP TABLE IF EXISTS `cp_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cp_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `verificationcode` int(4) NOT NULL,
+  `verificationcode_created` datetime NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cp_users`
+--
+
+LOCK TABLES `cp_users` WRITE;
+/*!40000 ALTER TABLE `cp_users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cp_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `label`
+--
+
+DROP TABLE IF EXISTS `label`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `label` (
+  `id` int(11) NOT NULL,
+  `name` varchar(25) NOT NULL,
+  `filename` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `label`
+--
+
+LOCK TABLES `label` WRITE;
+/*!40000 ALTER TABLE `label` DISABLE KEYS */;
+/*!40000 ALTER TABLE `label` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `plz_tarifgruppen`
+--
+
+DROP TABLE IF EXISTS `plz_tarifgruppen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `plz_tarifgruppen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plz` varchar(5) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `sparte` varchar(3) NOT NULL,
+  `id_tarifgruppen` int(11) NOT NULL,
+  `vertragspartner` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_tarifgruppen` (`id_tarifgruppen`)
+) ENGINE=InnoDB AUTO_INCREMENT=83180 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `plz_tarifgruppen`
+--
+
+LOCK TABLES `plz_tarifgruppen` WRITE;
+/*!40000 ALTER TABLE `plz_tarifgruppen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `plz_tarifgruppen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `preisaenderung`
+--
+
+DROP TABLE IF EXISTS `preisaenderung`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `preisaenderung` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `art` varchar(50) NOT NULL,
+  `text` varchar(100) NOT NULL,
+  `operand` varchar(2) NOT NULL,
+  `betrag` decimal(10,5) NOT NULL,
+  `brutto_netto` char(1) NOT NULL DEFAULT 'n',
+  `einheit` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `preisaenderung`
+--
+
+LOCK TABLES `preisaenderung` WRITE;
+/*!40000 ALTER TABLE `preisaenderung` DISABLE KEYS */;
+/*!40000 ALTER TABLE `preisaenderung` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sperrliste_gas`
+--
+
+DROP TABLE IF EXISTS `sperrliste_gas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sperrliste_gas` (
+  `plz` varchar(5) NOT NULL,
+  `city` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sperrliste_gas`
+--
+
+LOCK TABLES `sperrliste_gas` WRITE;
+/*!40000 ALTER TABLE `sperrliste_gas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sperrliste_gas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sperrliste_strom`
+--
+
+DROP TABLE IF EXISTS `sperrliste_strom`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sperrliste_strom` (
+  `plz` varchar(5) NOT NULL,
+  `city` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sperrliste_strom`
+--
+
+LOCK TABLES `sperrliste_strom` WRITE;
+/*!40000 ALTER TABLE `sperrliste_strom` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sperrliste_strom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarif_beschreibung`
+--
+
+DROP TABLE IF EXISTS `tarif_beschreibung`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarif_beschreibung` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarif_beschreibung`
+--
+
+LOCK TABLES `tarif_beschreibung` WRITE;
+/*!40000 ALTER TABLE `tarif_beschreibung` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarif_beschreibung` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarif_beschreibung_detail`
+--
+
+DROP TABLE IF EXISTS `tarif_beschreibung_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarif_beschreibung_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarif_beschreibung_detail`
+--
+
+LOCK TABLES `tarif_beschreibung_detail` WRITE;
+/*!40000 ALTER TABLE `tarif_beschreibung_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarif_beschreibung_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarife`
+--
+
+DROP TABLE IF EXISTS `tarife`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarife` (
+  `id` int(11) NOT NULL,
+  `portaltyp` int(11) NOT NULL,
+  `tarif_sap` varchar(10) NOT NULL,
+  `tarif2_sap` varchar(12) NOT NULL,
+  `sparte` varchar(5) NOT NULL,
+  `gueltig_ab` date NOT NULL,
+  `tarifname` varchar(100) NOT NULL,
+  `kundengruppe` varchar(5) NOT NULL,
+  `hinweis` varchar(150) NOT NULL,
+  `brutto_netto` char(1) NOT NULL DEFAULT 'b',
+  `lookup` varchar(50) NOT NULL,
+  `grundpreis` decimal(6,3) NOT NULL,
+  `arbeitspreis` decimal(5,3) NOT NULL,
+  `arbeitspreisnt` decimal(5,3) DEFAULT NULL,
+  `bonus` decimal(10,0) NOT NULL,
+  `online` varchar(10) DEFAULT NULL,
+  `laufzeit` varchar(20) NOT NULL,
+  `kuendigungsfrist` varchar(20) NOT NULL,
+  `preisgarantie` varchar(50) NOT NULL,
+  `headimage` varchar(255) NOT NULL,
+  `impressum` varchar(50) NOT NULL,
+  `docs` varchar(50) NOT NULL,
+  `docs2` varchar(50) NOT NULL,
+  `verlaengerung` varchar(15) NOT NULL,
+  `adv_img` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarife`
+--
+
+LOCK TABLES `tarife` WRITE;
+/*!40000 ALTER TABLE `tarife` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarife` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarife_ovp`
+--
+
+DROP TABLE IF EXISTS `tarife_ovp`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarife_ovp` (
+  `id` int(11) NOT NULL,
+  `portaltyp` int(11) NOT NULL,
+  `tarif_sap` varchar(10) NOT NULL,
+  `tarif2_sap` varchar(12) NOT NULL,
+  `sparte` varchar(5) NOT NULL,
+  `gueltig_ab` date NOT NULL,
+  `tarifname` varchar(100) NOT NULL,
+  `kundengruppe` varchar(5) NOT NULL,
+  `hinweis` varchar(150) NOT NULL,
+  `brutto_netto` char(1) NOT NULL DEFAULT 'b',
+  `lookup` varchar(50) NOT NULL,
+  `grundpreis` decimal(6,3) NOT NULL,
+  `arbeitspreis` decimal(5,3) NOT NULL,
+  `arbeitspreisnt` decimal(5,3) DEFAULT NULL,
+  `bonus` decimal(10,0) NOT NULL,
+  `online` varchar(10) DEFAULT NULL,
+  `laufzeit` varchar(20) NOT NULL,
+  `kuendigungsfrist` varchar(20) NOT NULL,
+  `preisgarantie` varchar(50) NOT NULL,
+  `headimage` varchar(255) NOT NULL,
+  `impressum` varchar(50) NOT NULL,
+  `docs` varchar(50) NOT NULL,
+  `docs2` varchar(50) NOT NULL,
+  `verlaengerung` varchar(15) NOT NULL,
+  `adv_img` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarife_ovp`
+--
+
+LOCK TABLES `tarife_ovp` WRITE;
+/*!40000 ALTER TABLE `tarife_ovp` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarife_ovp` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarife_tarif_beschreibung`
+--
+
+DROP TABLE IF EXISTS `tarife_tarif_beschreibung`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarife_tarif_beschreibung` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarife` int(11) NOT NULL,
+  `id_tarif_beschreibung` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1188 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarife_tarif_beschreibung`
+--
+
+LOCK TABLES `tarife_tarif_beschreibung` WRITE;
+/*!40000 ALTER TABLE `tarife_tarif_beschreibung` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarife_tarif_beschreibung` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarife_tarif_beschreibung_detail`
+--
+
+DROP TABLE IF EXISTS `tarife_tarif_beschreibung_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarife_tarif_beschreibung_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarife` int(11) NOT NULL,
+  `id_tarif_beschreibung_detail` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1287 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarife_tarif_beschreibung_detail`
+--
+
+LOCK TABLES `tarife_tarif_beschreibung_detail` WRITE;
+/*!40000 ALTER TABLE `tarife_tarif_beschreibung_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarife_tarif_beschreibung_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarife_tarifoptionen`
+--
+
+DROP TABLE IF EXISTS `tarife_tarifoptionen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarife_tarifoptionen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarife` int(11) NOT NULL,
+  `id_tarifoptionen` int(11) NOT NULL,
+  `checked` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarife_tarifoptionen`
+--
+
+LOCK TABLES `tarife_tarifoptionen` WRITE;
+/*!40000 ALTER TABLE `tarife_tarifoptionen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarife_tarifoptionen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifgruppen`
+--
+
+DROP TABLE IF EXISTS `tarifgruppen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifgruppen` (
+  `id` int(11) NOT NULL,
+  `gruppenname` varchar(50) NOT NULL,
+  `beschreibung` varchar(255) NOT NULL,
+  `vertragspartner` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifgruppen`
+--
+
+LOCK TABLES `tarifgruppen` WRITE;
+/*!40000 ALTER TABLE `tarifgruppen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifgruppen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifgruppen_tarife`
+--
+
+DROP TABLE IF EXISTS `tarifgruppen_tarife`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifgruppen_tarife` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarifgruppen` int(11) NOT NULL,
+  `id_tarife` int(11) NOT NULL,
+  `label` int(11) NOT NULL,
+  `tarifindex` int(11) NOT NULL DEFAULT 1,
+  `verbrauch_min` int(11) NOT NULL,
+  `verbrauch_max` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `empfehlung` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1034 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifgruppen_tarife`
+--
+
+LOCK TABLES `tarifgruppen_tarife` WRITE;
+/*!40000 ALTER TABLE `tarifgruppen_tarife` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifgruppen_tarife` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifoption_beschreibungen`
+--
+
+DROP TABLE IF EXISTS `tarifoption_beschreibungen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifoption_beschreibungen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(1000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifoption_beschreibungen`
+--
+
+LOCK TABLES `tarifoption_beschreibungen` WRITE;
+/*!40000 ALTER TABLE `tarifoption_beschreibungen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifoption_beschreibungen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifoption_preisaenderungen`
+--
+
+DROP TABLE IF EXISTS `tarifoption_preisaenderungen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifoption_preisaenderungen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarifoptionen` int(11) NOT NULL,
+  `id_preisaenderung` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifoption_preisaenderungen`
+--
+
+LOCK TABLES `tarifoption_preisaenderungen` WRITE;
+/*!40000 ALTER TABLE `tarifoption_preisaenderungen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifoption_preisaenderungen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifoptionen`
+--
+
+DROP TABLE IF EXISTS `tarifoptionen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifoptionen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(100) NOT NULL,
+  `option` tinyint(1) NOT NULL,
+  `group` varchar(50) NOT NULL,
+  `checkbox_id` varchar(50) DEFAULT NULL,
+  `toggle_off_img` varchar(255) DEFAULT NULL,
+  `toggle_on_img` varchar(255) DEFAULT NULL,
+  `info` varchar(500) DEFAULT NULL,
+  `target_product` varchar(20) NOT NULL,
+  `target2_product` varchar(20) NOT NULL,
+  `laufzeitende` varchar(15) DEFAULT NULL,
+  `docs` varchar(50) NOT NULL,
+  `docs2` varchar(50) NOT NULL,
+  `brutto_netto` varchar(1) NOT NULL,
+  `Grundpreis` decimal(5,2) NOT NULL,
+  `Arbeitspreis` decimal(5,2) NOT NULL,
+  `arbeitspreisnt` decimal(5,2) NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=905 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifoptionen`
+--
+
+LOCK TABLES `tarifoptionen` WRITE;
+/*!40000 ALTER TABLE `tarifoptionen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifoptionen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifoptionen_tarifoption_beschreibungen`
+--
+
+DROP TABLE IF EXISTS `tarifoptionen_tarifoption_beschreibungen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifoptionen_tarifoption_beschreibungen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarifoptionen` int(11) NOT NULL,
+  `id_tarifoption_beschreibungen` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=231 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifoptionen_tarifoption_beschreibungen`
+--
+
+LOCK TABLES `tarifoptionen_tarifoption_beschreibungen` WRITE;
+/*!40000 ALTER TABLE `tarifoptionen_tarifoption_beschreibungen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifoptionen_tarifoption_beschreibungen` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifoptionen_tarifoption_beschreibungen_detail`
+--
+
+DROP TABLE IF EXISTS `tarifoptionen_tarifoption_beschreibungen_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifoptionen_tarifoption_beschreibungen_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tarifoptionen` int(11) NOT NULL,
+  `id_tarifoption_beschreibungen` int(11) NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifoptionen_tarifoption_beschreibungen_detail`
+--
+
+LOCK TABLES `tarifoptionen_tarifoption_beschreibungen_detail` WRITE;
+/*!40000 ALTER TABLE `tarifoptionen_tarifoption_beschreibungen_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifoptionen_tarifoption_beschreibungen_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifwechsel`
+--
+
+DROP TABLE IF EXISTS `tarifwechsel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifwechsel` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tarif_from_id` varchar(20) NOT NULL,
+  `tarif_to_id` varchar(20) NOT NULL,
+  `sparte` varchar(2) NOT NULL,
+  `empfehlung` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=613 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifwechsel`
+--
+
+LOCK TABLES `tarifwechsel` WRITE;
+/*!40000 ALTER TABLE `tarifwechsel` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifwechsel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarifwechsel_2022-02-24`
+--
+
+DROP TABLE IF EXISTS `tarifwechsel_2022-02-24`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tarifwechsel_2022-02-24` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tarif_from_id` varchar(20) NOT NULL,
+  `tarif_to_id` varchar(20) NOT NULL,
+  `sparte` varchar(2) NOT NULL,
+  `empfehlung` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=480 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarifwechsel_2022-02-24`
+--
+
+LOCK TABLES `tarifwechsel_2022-02-24` WRITE;
+/*!40000 ALTER TABLE `tarifwechsel_2022-02-24` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarifwechsel_2022-02-24` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test_export_tabelle`
+--
+
+DROP TABLE IF EXISTS `test_export_tabelle`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `test_export_tabelle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plz` varchar(5) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `sparte` varchar(3) NOT NULL,
+  `id_tarifgruppen` int(11) NOT NULL,
+  `vertragspartner` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_tarifgruppen` (`id_tarifgruppen`)
+) ENGINE=InnoDB AUTO_INCREMENT=83180 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test_export_tabelle`
+--
+
+LOCK TABLES `test_export_tabelle` WRITE;
+/*!40000 ALTER TABLE `test_export_tabelle` DISABLE KEYS */;
+/*!40000 ALTER TABLE `test_export_tabelle` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vertragspartner`
+--
+
+DROP TABLE IF EXISTS `vertragspartner`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vertragspartner` (
+  `id` int(11) NOT NULL,
+  `partnername` varchar(50) NOT NULL,
+  `impressum` varchar(100) NOT NULL,
+  `bk` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vertragspartner`
+--
+
+LOCK TABLES `vertragspartner` WRITE;
+/*!40000 ALTER TABLE `vertragspartner` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vertragspartner` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-05-11 14:26:20

@@ -40,11 +40,11 @@
 
     //$backup->writeTo('db1');
 
-    /*
-    if(!$backup->restoreFrom('db1', "2022-05-09 10:04:41")) {
+    
+    if(!$backup->restoreFrom('db1', "2022-05-12 09:17:02")) {
         echo $backup->getErrorMessage();
     }
-    */
+    
 
     print_r($backup->getRestoreableTimestamps('db1'));
 
