@@ -127,6 +127,7 @@
                 `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                 `tablename` varchar(255) NOT NULL,
                 `createstmt` text NOT NULL,
+                `fields` text NOT NULL,
                 PRIMARY KEY (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
               CREATE TABLE IF NOT EXISTS `' . $this->backup_config_tablename . '` (
@@ -206,16 +207,34 @@
                     $stmt->execute();
                 } catch (PDOException $e) {
                     $this->setError($e->getMessage());
-                    return false;
+                    $success_switch = false;
                 }
                 
-                $result = $stmt->fetchAll()[0][1] . ";";
+                $createstmt = $stmt->fetchAll()[0][1] . ";";
 
-                $sql = "INSERT INTO `" . $this->backup_structure_tablename . "` (`timestamp`, `tablename`, `createstmt`) VALUES (:timestamp, :tablename, :createstmt);";
+                $sql = 'DESCRIBE `' . $table . '`;';
+                $stmt = $from_db->prepare($sql);
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    $success_switch = false;
+                }
+                $fields = array();
+                $result = $stmt->fetchAll();
+
+                foreach($result as $item) {
+                    $fields[] = $item['Field'];
+                }
+
+                $fields = implode("<::>" , $fields);
+
+                $sql = "INSERT INTO `" . $this->backup_structure_tablename . "` (`timestamp`, `tablename`, `createstmt`, `fields`) VALUES (:timestamp, :tablename, :createstmt, :fields);";
                 $stmt = $to_db->prepare($sql);
                 $stmt->bindParam(':timestamp', $backup_timestamp);
                 $stmt->bindParam(':tablename', $table, PDO::PARAM_STR);
-                $stmt->bindParam(':createstmt', $result, PDO::PARAM_STMT);
+                $stmt->bindParam(':createstmt', $createstmt, PDO::PARAM_STMT);
+                $stmt->bindParam(':fields', $fields, PDO::PARAM_STR);
 
                 try {
                     $stmt->execute();
@@ -260,10 +279,9 @@
         public function restoreFrom(string $str_from_db, string $timestamp) : bool
         {
             /*
-                1. Prüfe, ob Backup Tabellen in DB vorhanden [ ]
+                1. Prüfe, ob Backup Tabellen in DB vorhanden [X]
                 2. Prüfe, ob Zeitstempel in Backups vorhanden und holt sich Struktur der wiederherzustellenden Tabelle [x]
-                3. Baue Statement zusammen mit Daten aus Tabellen [ ]
-
+                3. Baue Statement zusammen mit Daten aus Tabellen [X]
             */
             if(!$this->isOpen()) { return false; }
 
@@ -288,6 +306,7 @@
                     return false;
             }
 
+            $success_switch = true;
 
             //1
             $tables = $this->getTables($from_db);
@@ -298,10 +317,15 @@
             }
 
             //2
-            $sql = "SELECT `tablename`, `createstmt` FROM `" . $this->backup_structure_tablename . "` WHERE `timestamp` = :timestamp;";
+            $sql = "SELECT `tablename`, `createstmt`, `fields` FROM `" . $this->backup_structure_tablename . "` WHERE `timestamp` = :timestamp;";
             $stmt = $from_db->prepare($sql);
             $stmt->bindParam(":timestamp", $timestamp, PDO::PARAM_STR);
-            $stmt->execute();
+            try{
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+                return false;
+            }
 
             $result = $stmt->fetchAll();
 
@@ -310,32 +334,43 @@
                 return false;
             }
 
+
+            //setzt fremdschlüssel aus
+            $sql = "SET FOREIGN_KEY_CHECKS = 0;";
+            $stmt = $to_db->prepare($sql);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+                return false;
+            }
+
+            //3
             foreach($result as $item) {
                 $tablename = $item['tablename'];
                 $createstmt = $item['createstmt'];
+                $fields = $item['fields'];
 
-                $sql = "DESCRIBE `" . $tablename . "`";
-                $stmt = $from_db->prepare($sql);
-                $stmt->execute();
-
-                $result = $stmt->fetchAll();
-
-                $fields = array();
-                foreach($result as $item) {
-                    $fields[] = $item['Field'];
-                }
+                $fields = explode("<::>", $fields);
 
                 $statement = "";
 
                 $statement .= "DROP TABLE IF EXISTS `" . $tablename . "`;";
-                $statement .= "SET FOREIGN_KEY_CHECKS = 0;";
+                //$statement .= "SET FOREIGN_KEY_CHECKS = 0;";
                 $statement .= $createstmt;
 
                 $sql = "SELECT `field`, `value` FROM `" . $this->backup_value_tablename . "` WHERE `timestamp` = :zeitstempel AND `tablename` = :tablename;";
                 $stmt = $from_db->prepare($sql);
                 $stmt->bindParam(":zeitstempel", $timestamp, PDO::PARAM_STR);
                 $stmt->bindParam(":tablename", $tablename, PDO::PARAM_STR);
-                $stmt->execute();
+
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    $success_switch = false;
+                }
+                
 
                 $result = $stmt->fetchAll();
 
@@ -367,23 +402,38 @@
 
                 $statement .= "INSERT INTO `" . $tablename . "` (`" . $columns . "`) VALUES " . $insert_values;
 
-                $statement .= "SET FOREIGN_KEY_CHECKS = 1;";
+                //$statement .= "SET FOREIGN_KEY_CHECKS = 1;";
 
-                
+                /*
                 echo "<hr>";
                 print_r($statement);
                 echo "<hr>";
-                
+                */
 
                 $stmt = $to_db->prepare($statement);
 
                 try {
                     $stmt->execute();
                 } catch (PDOException $e) {
-                    $this->setError("TABELLE: "  . $tablename . " --> " . $e);
+                    $this->setError("TABELLE: "  . $tablename . " --> " . $e->getMessage());
+                    $success_switch = false;
                 }
             }
 
+            //setzt fremdschlüssel aus
+            $sql = "SET FOREIGN_KEY_CHECKS = 1;";
+            $stmt = $to_db->prepare($sql);
+
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+                return false;
+            }
+
+            if(!$success_switch) {
+                return false;
+            }
             //todo
             return true;
         }
@@ -435,8 +485,8 @@
                         } else if(is_numeric($value)) {
                             $value = $value;
                         } else {
-                            //$value = '' . $from_db->quote($value) . '';
-                            $value = $value;
+                            $value = '' . $from_db->quote($value) . '';
+                            //$value = $value;
                         }
                         $temp_stmt .= '("' . $timestamp . '", "' . $table . '", "' . $key . '", ' . $value . '),';
                     }
@@ -446,6 +496,12 @@
             $temp_stmt = substr($temp_stmt, 0, strlen($temp_stmt) - 1) . ";";
 
             $statement .= $temp_stmt;
+
+            /*
+            echo "<hr>";
+            print_r($statement);
+            echo "<hr>";
+            */
 
             return $statement;
         }
@@ -487,7 +543,7 @@
             try {
                 $stmt->execute();
             } catch (PDOException $e) {
-                $this->setError($e);
+                $this->setError($e->getMessage());
                 return [];
             }
 

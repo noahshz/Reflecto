@@ -2,7 +2,7 @@
     require_once 'Sync.php';
     require_once 'Backup.php';
 
-    /*
+/*
     $sync = new Sync();
 
     $sync->setDB('db1', [
@@ -18,10 +18,37 @@
         'password' => 'xampp#local'
     ]);
 
-    if(!$sync->syncTo("db2")) {
+    $tables = [
+        'adv_img',
+        'config',
+        'label',
+        'preisaenderung',                                 
+        'sperrliste_gas',                                   
+        'sperrliste_strom',                                  
+        'table 22',                                        
+        'tarif_bak',                                        
+        'tarif_beschreibung',                                
+        'tarif_beschreibung_detail',                          
+        'tarife',                                            
+        'tarife_tarif_beschreibung',                         
+        'tarife_tarif_beschreibung_detail',                   
+        'tarife_tarifoptionen',                              
+        'tarifgruppen',                                       
+        'tarifgruppen_tarife',                                
+        'tarifoption_beschreibungen',                         
+        'tarifoption_preisaenderungen',                       
+        'tarifoptionen',                                     
+        'tarifoptionen_tarifoption_beschreibungen',           
+        'tarifoptionen_tarifoption_beschreibungen_detail',
+        'tarifwechsel',                                      
+        'vertragspartner'
+    ];
+    
+    if(!$sync->syncTo("db2", $tables)) {
         echo $sync->getErrorMessage();
-    } 
-    */
+    }
+*/
+    
 
     $backup = new Backup();
 
@@ -40,11 +67,9 @@
 
     //$backup->writeTo('db1');
 
-    
-    if(!$backup->restoreFrom('db1', "2022-05-12 09:17:02")) {
-        echo $backup->getErrorMessage();
-    }
-    
+    //$backup->restoreFrom('db1', "2022-05-12 11:26:00");
+
+    echo $backup->getErrorMessage();
 
     print_r($backup->getRestoreableTimestamps('db1'));
 

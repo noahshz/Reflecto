@@ -149,6 +149,16 @@
             $old_db_data = array();
             $new_db_data = array();
 
+            //foreign key checks
+            $sql = "SET FOREIGN_KEY_CHECKS = 0;";
+            $stmt = $to_db->prepare($sql);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+                return false;
+            }
+
             foreach($tablesToSync as $table) {
                 /*
                     Prüft, ob Tabelle bei der FROM Db vorhanden ist, wenn nein dann fehler
@@ -167,7 +177,6 @@
                             'Prepare Stmt  ' . $e->getMessage() . ' ' . $table
                             . "<br>"
                         );
-                        return false;
                     }
  		            //echo "OK<br>";
 		
@@ -192,6 +201,15 @@
                     }
 
                 }
+            }
+            //foreign key checks
+            $sql = "SET FOREIGN_KEY_CHECKS = 1;";
+            $stmt = $to_db->prepare($sql);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->setError($e->getMessage());
+                return false;
             }
             //Datenbanken sind synchron ja / nein
 		    //echo "<strong>Validating all Data" . '</strong><br>';
@@ -239,7 +257,7 @@
             /*
                 Fremdschlüssel aus
             */
-            $statement .= "SET FOREIGN_KEY_CHECKS = 0;";
+            //$statement .= "SET FOREIGN_KEY_CHECKS = 0;";
 
             /*
                 Daten einfügen
@@ -286,7 +304,7 @@
             /*
                 Fremdschlüssel an
             */
-            $statement .= "SET FOREIGN_KEY_CHECKS = 1;";
+            //$statement .= "SET FOREIGN_KEY_CHECKS = 1;";
  
             return $statement;
         }
