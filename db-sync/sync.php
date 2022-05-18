@@ -1,9 +1,19 @@
 <?php
+    namespace App\CustomClasses;
+
+    use PDO;
+    use FFI\Exception;
+    use PDOException;
+
     class Sync {
         private PDO $db1;
         private PDO $db2;
         
         private string $errmsg;
+
+        private string $backup_value_tablename = "sn_backup_values";
+        private string $backup_structure_tablename = "sn_backup_structure";
+        private string $backup_config_tablename = "sn_backup_config";
 
         public function __construct()
         {
@@ -37,7 +47,6 @@
                 {
                     $this->setError(
                         "[" . $db . "] : " . $e->getMessage()
-                        . "<br>"
                     );
                     return false;
                 }
@@ -165,41 +174,45 @@
                 */
                 //echo 'Syncing ' . $table . '<br>';
 
-		        if($this->tableExists($from_db, $table)) {
-                    $sql = $this->createStatement($from_db, $table);
-                    //echo $sql . '<hr>';
-			        $stmt = $to_db->prepare($sql);
-                    try{
+                if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
+
+
+                    if($this->tableExists($from_db, $table)) {
+                        $sql = $this->createStatement($from_db, $table);
+                        //echo $sql . '<hr>';
+                        $stmt = $to_db->prepare($sql);
+                        try{
+                            $stmt->execute();
+                        } catch (PDOException $e) {
+                            //echo "ERROR";
+                            $this->setError(
+                                'Prepare Stmt  ' . $e->getMessage() . ' ' . $table
+                                . "<br>"
+                            );
+                        }
+                        //echo "OK<br>";
+            
+                        /* schreibt alte daten sowie neue daten in arrays */
+                        //todo
+                        $sql = "SELECT * FROM `" . $table . "`;";
+                        $stmt = $from_db->prepare($sql);
                         $stmt->execute();
-                    } catch (PDOException $e) {
-		                //echo "ERROR";
-                        $this->setError(
-                            'Prepare Stmt  ' . $e->getMessage() . ' ' . $table
-                            . "<br>"
-                        );
+
+                        $old_db_data[] = $stmt->fetchAll();
+
+                        $stmt = $to_db->prepare($sql);
+                        $stmt->execute();
+
+                        $new_db_data[] = $stmt->fetchAll();
+
+                        if($old_db_data === $new_db_data){
+                            //echo 'Sync ok';
+                        } else { 
+                            $this->setError('Sync Data not valid.');
+                            //echo '<hr> Sync NOT ok<br>';
+                        }
+
                     }
- 		            //echo "OK<br>";
-		
-                    /* schreibt alte daten sowie neue daten in arrays */
-                    //todo
-                    $sql = "SELECT * FROM `" . $table . "`;";
-                    $stmt = $from_db->prepare($sql);
-                    $stmt->execute();
-
-                    $old_db_data[] = $stmt->fetchAll();
-
-                    $stmt = $to_db->prepare($sql);
-                    $stmt->execute();
-
-                    $new_db_data[] = $stmt->fetchAll();
-
-                    if($old_db_data === $new_db_data){
-                        //echo 'Sync ok';
-                    } else { 
-                        $this->setError('Sync Data not valid.<br>');
-                        //echo '<hr> Sync NOT ok<br>';
-                    }
-
                 }
             }
             //foreign key checks
@@ -216,7 +229,7 @@
             if($old_db_data === $new_db_data){
                 return true;
             } else { 
-            	$this->setError('Sync Data not valid.<br>');
+            	$this->setError('Sync Data not valid.');
             }
 
 		    return false;

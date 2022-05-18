@@ -1,4 +1,10 @@
 <?php
+    namespace App\CustomClasses;
+
+    use PDO;
+    use FFI\Exception;
+    use PDOException;
+
     class Backup {
         private PDO $db1;
         private PDO $db2;
@@ -17,7 +23,10 @@
             'varchar',
             'char',
             'binary',
-            'json'
+            'json',
+            'datetime',
+            'date',
+            'timestamp'
         ];
 
         public function __construct()
@@ -213,46 +222,49 @@
             //schreibe struktur für jede tabelle in sn_backup_structure
             foreach($tables as $table)
             {
-                $sql = "SHOW CREATE TABLE `" . $table. "`;";
-                $stmt = $from_db->prepare($sql);
-                try {
-                    $stmt->execute();
-                } catch (PDOException $e) {
-                    $this->setError($e->getMessage());
-                    $success_switch = false;
-                }
-                
-                $createstmt = $stmt->fetchAll()[0][1] . ";";
+                if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
 
-                $sql = 'DESCRIBE `' . $table . '`;';
-                $stmt = $from_db->prepare($sql);
-                try {
-                    $stmt->execute();
-                } catch (PDOException $e) {
-                    $this->setError($e->getMessage());
-                    $success_switch = false;
-                }
-                $fields = array();
-                $result = $stmt->fetchAll();
+                    $sql = "SHOW CREATE TABLE `" . $table. "`;";
+                    $stmt = $from_db->prepare($sql);
+                    try {
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        $this->setError($e->getMessage());
+                        $success_switch = false;
+                    }
+                    
+                    $createstmt = $stmt->fetchAll()[0][1] . ";";
 
-                foreach($result as $item) {
-                    $fields[] = $item['Field'];
-                }
+                    $sql = 'DESCRIBE `' . $table . '`;';
+                    $stmt = $from_db->prepare($sql);
+                    try {
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        $this->setError($e->getMessage());
+                        $success_switch = false;
+                    }
+                    $fields = array();
+                    $result = $stmt->fetchAll();
 
-                $fields = implode("<::>" , $fields);
+                    foreach($result as $item) {
+                        $fields[] = $item['Field'];
+                    }
 
-                $sql = "INSERT INTO `" . $this->backup_structure_tablename . "` (`timestamp`, `tablename`, `createstmt`, `fields`) VALUES (:timestamp, :tablename, :createstmt, :fields);";
-                $stmt = $to_db->prepare($sql);
-                $stmt->bindParam(':timestamp', $backup_timestamp);
-                $stmt->bindParam(':tablename', $table, PDO::PARAM_STR);
-                $stmt->bindParam(':createstmt', $createstmt, PDO::PARAM_STMT);
-                $stmt->bindParam(':fields', $fields, PDO::PARAM_STR);
+                    $fields = implode("<::>" , $fields);
 
-                try {
-                    $stmt->execute();
-                } catch (PDOException $e) {
-                    $this->setError($e->getMessage());
-                    $success_switch = false;
+                    $sql = "INSERT INTO `" . $this->backup_structure_tablename . "` (`timestamp`, `tablename`, `createstmt`, `fields`) VALUES (:timestamp, :tablename, :createstmt, :fields);";
+                    $stmt = $to_db->prepare($sql);
+                    $stmt->bindParam(':timestamp', $backup_timestamp);
+                    $stmt->bindParam(':tablename', $table, PDO::PARAM_STR);
+                    $stmt->bindParam(':createstmt', $createstmt, PDO::PARAM_STMT);
+                    $stmt->bindParam(':fields', $fields, PDO::PARAM_STR);
+
+                    try {
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        $this->setError($e->getMessage());
+                        $success_switch = false;
+                    }
                 }
             }
 
@@ -260,19 +272,21 @@
             //TODO
             foreach($tables as $table) 
             {             
-                $sql = "SELECT * FROM `" . $table . "`;";
-                $stmt = $from_db->prepare($sql);
-                $stmt->execute();
+                if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
+                    $sql = "SELECT * FROM `" . $table . "`;";
+                    $stmt = $from_db->prepare($sql);
+                    $stmt->execute();
 
-                if(!empty($stmt->fetchAll())) {
-                    $statement = $this->createInsertStatement($from_db, $table, $backup_timestamp);
-                    $stmt = $to_db->prepare($statement);
+                    if(!empty($stmt->fetchAll())) {
+                        $statement = $this->createInsertStatement($from_db, $table, $backup_timestamp);
+                        $stmt = $to_db->prepare($statement);
 
-                    try {
-                        $stmt->execute();
-                    } catch (PDOException $e) {
-                        $this->setError($e->getMessage());
-                        $success_switch = false;
+                        try {
+                            $stmt->execute();
+                        } catch (PDOException $e) {
+                            $this->setError($e->getMessage());
+                            $success_switch = false;
+                        }
                     }
                 }
 
@@ -288,7 +302,7 @@
             }
             
         }
-        public function restoreFrom(string $str_from_db, string $timestamp) : bool
+        public function restoreFrom(string $str_from_db, string $timestamp, array $destination_db) : bool
         {
             /*
                 1. Prüfe, ob Backup Tabellen in DB vorhanden [X]
@@ -298,9 +312,15 @@
             if(!$this->isOpen()) { return false; }
 
             $to_db = null;
-            $from_db = null;
+            $to_db_sync = false;
 
-            if(!$this->isOpen()) { return false; }
+            $from_db = null;
+            $from_db_sync = false;
+
+            $databases = [
+                'db1' => null,
+                'db2' => null
+            ];
 
             //'db1' oder 'db2'
             switch($str_from_db)
@@ -308,14 +328,39 @@
                 case 'db1':
                     $to_db = $this->db2;
                     $from_db = $this->db1;
+
+                    $databases['db1'] = 'from_db';
+                    $databases['db2'] = 'to_db';
                     break;
                 case 'db2':
                     $to_db = $this->db1;
                     $from_db = $this->db2;
+
+                    $databases['db2'] = 'from_db';
+                    $databases['db1'] = 'to_db';
                     break;
                 default:
                     $this->setError('Ungültiger Parameter! Bitte nur \'db1\' oder \'db2\' verwenden.');
                     return false;
+            }
+
+            //abfrage ob db1 oder db2 in destinations drinne
+            if(!empty($destination_db)) {
+                foreach($destination_db as $item) {
+                    if($item != "db1" && $item != "db2") {
+                        $this->setError("Bitte nur 'db1' oder 'db2' als Ziel-Datenbank verwenden.");
+                        return false;
+                    }
+                    if($databases[$item] == 'from_db') {
+                        $from_db_sync = true;
+                    }
+                    if($databases[$item] == 'to_db') {
+                        $to_db_sync = true;
+                    }
+                }
+            } else {
+                $this->setError("Es wurde keine Zieldatenbank übergeben.");
+                return false;
             }
 
             $success_switch = true;
@@ -348,14 +393,31 @@
 
 
             //setzt fremdschlüssel aus
+            //SWITCH FÜR DESTINATION
             $sql = "SET FOREIGN_KEY_CHECKS = 0;";
-            $stmt = $to_db->prepare($sql);
-            try {
-                $stmt->execute();
-            } catch (PDOException $e) {
-                $this->setError($e->getMessage());
-                return false;
+
+            if($to_db_sync){
+                $stmt = $to_db->prepare($sql);
+
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    return false;
+                }
             }
+            if($from_db_sync) {
+                $stmt = $from_db->prepare($sql);
+
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    return false;
+                }
+            }
+
+
 
             //3
             foreach($result as $item) {
@@ -424,25 +486,53 @@
                 echo "<hr>";
                 */
 
-                $stmt = $to_db->prepare($statement);
-
-                try {
-                    $stmt->execute();
-                } catch (PDOException $e) {
-                    $this->setError("TABELLE: "  . $tablename . " --> " . $e->getMessage());
-                    $success_switch = false;
+                //SWITCH FOR DESTINATION
+                if($to_db_sync){
+                    $stmt = $to_db->prepare($statement);
+                    
+                    try {
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        $this->setError("TABELLE: "  . $tablename . " --> " . $e->getMessage());
+                        $success_switch = false;
+                    }
                 }
+                if($from_db_sync) {
+                    $stmt = $from_db->prepare($statement);
+
+                    try {
+                        $stmt->execute();
+                    } catch (PDOException $e) {
+                        $this->setError("TABELLE: "  . $tablename . " --> " . $e->getMessage());
+                        $success_switch = false;
+                    }
+                }
+
             }
 
             //setzt fremdschlüssel aus
+            //SWITCH FOR DESTINATION
             $sql = "SET FOREIGN_KEY_CHECKS = 1;";
-            $stmt = $to_db->prepare($sql);
 
-            try {
-                $stmt->execute();
-            } catch (PDOException $e) {
-                $this->setError($e->getMessage());
-                return false;
+            if($to_db_sync){
+                $stmt = $to_db->prepare($sql);
+                
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    return false;
+                }
+            }
+            if($from_db_sync) {
+                $stmt = $from_db->prepare($sql);
+                
+                try {
+                    $stmt->execute();
+                } catch (PDOException $e) {
+                    $this->setError($e->getMessage());
+                    return false;
+                }
             }
 
             if(!$success_switch) {
@@ -501,7 +591,7 @@
             foreach($result as $item) {
                 $fieldname[] = $item['Field'];
 
-                if(str_contains($item['Type'], "(")) {
+                if(strpos($item['Type'], "(")) {
                     $fieldtype[] = substr($item['Type'], 0, strpos($item['Type'], "("));
                 } else {
                     $fieldtype[] = $item['Type'];
