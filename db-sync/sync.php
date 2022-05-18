@@ -1,10 +1,4 @@
 <?php
-    namespace App\CustomClasses;
-
-    use PDO;
-    use FFI\Exception;
-    use PDOException;
-
     class Sync {
         private PDO $db1;
         private PDO $db2;
