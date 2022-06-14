@@ -60,14 +60,14 @@
     ]);
     $backup->setDB('db2', [
         'host' => 'localhost',
-        'dbname' => 'sync_2',
+        'dbname' => 'sync_1',
         'username' => 'root',
         'password' => 'xampp#local'
     ]);
 
-    //$backup->writeTo('db1');
+    $backup->writeTo('db1');
 
-    $backup->restoreFrom('db1', "2022-05-16 08:29:47", ['db1', 'db2']);
+    //$backup->restoreFrom('db1', "2022-05-16 08:29:47", ['db1', 'db2']);
 
     echo $backup->getErrorMessage();
 

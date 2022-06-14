@@ -1,4 +1,10 @@
 <?php
+    namespace App\CustomClasses;
+
+    use PDO;
+    use FFI\Exception;
+    use PDOException;
+
     class Backup {
         private PDO $db1;
         private PDO $db2;
@@ -216,6 +222,7 @@
             //schreibe struktur für jede tabelle in sn_backup_structure
             foreach($tables as $table)
             {
+                //prüfe ob sn table
                 if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
 
                     $sql = "SHOW CREATE TABLE `" . $table. "`;";
@@ -652,7 +659,7 @@
             }
             return $this->errmsg;
         }
-        public function getRestoreableTimestamps(string $db) : array
+        public function getRestoreableTimestamps(string $db, string $orderby = null) : array
         {
             switch($db) {
                 case 'db1':
@@ -671,7 +678,12 @@
                 return [];
             }
 
-            $sql = "SELECT DISTINCT `timestamp` FROM `" . $this->backup_structure_tablename . "`;";
+            if($orderby != null) {
+                $sql = "SELECT DISTINCT `timestamp` FROM `" . $this->backup_structure_tablename . "` ORDER BY `timestamp` " . strtoupper($orderby) . ";";
+            } else {
+                $sql = "SELECT DISTINCT `timestamp` FROM `" . $this->backup_structure_tablename . "`;";
+            }
+            
             $stmt = $pdo->prepare($sql);
 
             try {
