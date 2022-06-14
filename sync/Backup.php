@@ -29,6 +29,8 @@
             'timestamp'
         ];
 
+        private array $blacklist = [];
+
         public function __construct()
         {
             $this->errmsg = "";
@@ -88,6 +90,10 @@
                 );
                 return false;
             }
+        }
+        public function ignoreTables(array $tables) : void
+        {
+            $this->blacklist = $tables;
         }
         private function isOpen() : bool 
         {
@@ -223,8 +229,7 @@
             foreach($tables as $table)
             {
                 //prüfe ob sn table
-                if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
-
+                if(!in_array($table, $this->blacklist) && $table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
                     $sql = "SHOW CREATE TABLE `" . $table. "`;";
                     $stmt = $from_db->prepare($sql);
                     try {
@@ -273,7 +278,7 @@
             //TODO
             foreach($tables as $table) 
             {             
-                if($table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
+                if(!in_array($table, $this->blacklist) && $table != $this->backup_config_tablename && $table != $this->backup_structure_tablename && $table != $this->backup_value_tablename) {
                     $sql = "SELECT * FROM `" . $table . "`;";
                     $stmt = $from_db->prepare($sql);
                     $stmt->execute();
