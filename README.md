@@ -1,2 +1,3 @@
-# db-sync
- A PHP-Class which makes it easy to synchronize 2 Databases
+<h1 align="center">db-mirror</h1>
+
+db-mirror contains two classes for database sync and backup.
