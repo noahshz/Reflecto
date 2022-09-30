@@ -1,6 +1,6 @@
-<h1 align="center">ReflectoDB</h1>
+<h1 align="center">Reflecto</h1>
 
-ReflectoDB contains two classes for database sync and backup.
+Reflecto contains two classes for database sync and backup.
 
 ## sync
 
