@@ -1,6 +1,6 @@
-<h1 align="center">db-mirror</h1>
+<h1 align="center">ReflectoDB</h1>
 
-db-mirror contains two classes for database sync and backup.
+ReflectoDB contains two classes for database sync and backup.
 
 ## sync
 
